@@ -1,59 +1,67 @@
-statements  : NEWLINE* statement (NEWLINE+ statement)* NEWLINE*
+statements  ->  NEWLINE* statement (NEWLINE+ statement)* NEWLINE*  # * 表示可以出现多次
 
-statement		: KEYWORD:RETURN expr?
-						: KEYWORD:CONTINUE
-						: KEYWORD:BREAK
-						: expr
+statement	->  KEYWORD:RETURN expr?  # ? 表示可以出现 0 次或 1 次 
+			->  KEYWORD:CONTINUE
+		    ->  KEYWORD:BREAK
+			->  expr
 
-expr        : KEYWORD:VAR IDENTIFIER EQ expr
-            : comp-expr ((KEYWORD:AND|KEYWORD:OR) comp-expr)*
+expr        ->  KEYWORD:VAR IDENTIFIER EQ expr  # VAR x = 1+2
+            ->  comp-expr ((KEYWORD:AND|KEYWORD:OR) comp-expr)*
 
-comp-expr   : NOT comp-expr
-            : arith-expr ((EE|LT|GT|LTE|GTE) arith-expr)*
+comp-expr   ->  NOT comp-expr
+            ->  arith-expr ((EE|LT|GT|LTE|GTE) arith-expr)*
 
-arith-expr  :	term ((PLUS|MINUS) term)*
+arith-expr  ->  term ((PLUS|MINUS) term)*
 
-term        : factor ((MUL|DIV) factor)*
+term        ->  factor ((MUL|DIV) factor)*
 
-factor      : (PLUS|MINUS) factor
-            : power
+factor      ->  (PLUS|MINUS) factor
+            ->  power  # 幂运算
 
-power       : call (POW factor)*
+power       ->  call (POW factor)*  # POW 幂乘
 
-call        : atom (LPAREN (expr (COMMA expr)*)? RPAREN)?
+call        ->  atom (LPAREN (expr (COMMA expr)*)? RPAREN)?
 
-atom        : INT|FLOAT|STRING|IDENTIFIER
-            : LPAREN expr RPAREN
-            : list-expr
-            : if-expr
-            : for-expr
-            : while-expr
-            : func-def
+atom        ->  INT|FLOAT|STRING|IDENTIFIER  # 1, 1,2, "mendax", varible 访问之从而取值
+            ->  LPAREN expr RPAREN
+            ->  list-expr
+            ->  if-expr
+            ->  for-expr
+            ->  while-expr
+            ->  func-def
 
-list-expr   : LSQUARE (expr (COMMA expr)*)? RSQUARE
+list-expr   ->  LSQUARE (expr (COMMA expr)*)? RSQUARE
 
-if-expr     : KEYWORD:IF expr KEYWORD:THEN
-              (statement if-expr-b|if-expr-c?)
-            | (NEWLINE statements KEYWORD:END|if-expr-b|if-expr-c)
+if-expr     ->  KEYWORD:IF expr KEYWORD:THEN
+                (statement if-expr-b|if-expr-c?)
+            |   (NEWLINE statements KEYWORD:END|if-expr-b|if-expr-c)
 
-if-expr-b   : KEYWORD:ELIF expr KEYWORD:THEN
-              (statement if-expr-b|if-expr-c?)
-            | (NEWLINE statements KEYWORD:END|if-expr-b|if-expr-c)
+if-expr-b   ->  KEYWORD:ELIF expr KEYWORD:THEN
+                (statement if-expr-b|if-expr-c?)
+            |   (NEWLINE statements KEYWORD:END|if-expr-b|if-expr-c)
 
-if-expr-c   : KEYWORD:ELSE
-              statement
-            | (NEWLINE statements KEYWORD:END)
+if-expr-c   ->  KEYWORD:ELSE
+                statement
+            |   (NEWLINE statements KEYWORD:END)
 
-for-expr    : KEYWORD:FOR IDENTIFIER EQ expr KEYWORD:TO expr 
-              (KEYWORD:STEP expr)? KEYWORD:THEN
-              statement
-            | (NEWLINE statements KEYWORD:END)
+for-expr    ->  KEYWORD:FOR IDENTIFIER EQ expr KEYWORD:TO expr 
+                (KEYWORD:STEP expr)? KEYWORD:THEN
+                statement
+            |   (NEWLINE statements KEYWORD:END)
 
-while-expr  : KEYWORD:WHILE expr KEYWORD:THEN
-              statement
-            | (NEWLINE statements KEYWORD:END)
+while-expr  ->  KEYWORD:WHILE expr KEYWORD:THEN
+                statement
+            |   (NEWLINE statements KEYWORD:END)
 
-func-def    : KEYWORD:FUN IDENTIFIER?
-              LPAREN (IDENTIFIER (COMMA IDENTIFIER)*)? RPAREN
-              (ARROW expr)
-            | (NEWLINE statements KEYWORD:END)
+func-def    ->  KEYWORD:FUN IDENTIFIER?
+                LPAREN (IDENTIFIER (COMMA IDENTIFIER)*)? RPAREN
+                (ARROW expr)
+            |   (NEWLINE statements KEYWORD:END)
+
+
+
+对于任何像 factor 一样的函数，其自身是作为“非终止符”的存在。那么在其执行过程中，就可能会有 error 出现的可能。
+
+文法设计：由上往下，优先级逐渐递增。这是由于整个文法的程序描述是一个递归向下的过程，所以在递归的最深处，也就是优先级最高的表达式。
+
+1 个箭头代表一个由上下文无关文法描述的表达式。

@@ -75,7 +75,7 @@ class Interpreter:
         context.symbol_table.set(var_name, value)
         return res.success(value)
 
-    # 实现解释器的二元操作部分
+    # 实现解释器的二元操作部分（不要忘记字符串的拼接..）
     def visit_BinOpNode(self, node, context):
         res = RTResult()
         # 递归处理 AST 左结点 | 使用 register 方法是由于中途存在报错的可能性
@@ -87,7 +87,7 @@ class Interpreter:
         if res.should_return():
             return res
 
-        # 调用四则运算等所对应的函数来计算结果 | Number 类
+        # 调用四则运算等所对应的函数来计算结果 | Number 类 | String 类
         if node.op_tok.type == TT_PLUS:
             # return Number(self.value + other.value).set_context(self.context), None
             result, error = left.added_to(right)
@@ -327,7 +327,7 @@ class Interpreter:
 # IMPORTS
 #######################################
 
-from data.tokens import *
-from util.error import RTError
-from util.values import Number, String, List, Function
 from util.rt_result import RTResult
+from util.values import Number, String, List, Function
+from util.error import RTError
+from data.tokens import *

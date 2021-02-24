@@ -234,12 +234,15 @@ class String(Value):
         super().__init__()
         self.value = value
 
+    # 重载 added_to 函数
     def added_to(self, other):
         if isinstance(other, String):
+            # self.value + other.value 基于 python 语法的拼接操作
             return String(self.value + other.value).set_context(self.context), None
         else:
             return None, Value.illegal_operation(self, other)
 
+    # 重载 multed_by 函数 | 基于 python 语法的重复 "HelloWorld" * N 次
     def multed_by(self, other):
         if isinstance(other, Number):
             return String(self.value * other.value).set_context(self.context), None
@@ -655,9 +658,9 @@ BuiltInFunction.run = BuiltInFunction("run")
 # IMPORTS
 #######################################
 
-from util.symbol_table import SymbolTable
-from util.rt_result import RTResult
-from util.context import Context
-from util.error import RTError
-from basic.run import run
 from basic.interpreter import Interpreter
+from basic.run import run
+from util.error import RTError
+from util.context import Context
+from util.rt_result import RTResult
+from util.symbol_table import SymbolTable

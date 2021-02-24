@@ -116,29 +116,33 @@ class Lexer:
     def make_string(self):
         string = ''
         pos_start = self.pos.copy()
-        escape_character = False  # 含义 ？
+        escape_character = False  # 判断是否为转义字符
         self.advance()
 
-        escape_characters = {  # 字典
-            'n': '\n',
-            't': '\t'
+        escape_characters = {  # 字典，用以表示其映射关系
+            'n': '\n',  # 换行
+            't': '\t'   # 缩进
         }
 
+        # " abc \"d\" \n \t "
+        # 或者不是转义字符
         while self.current_char != None and (self.current_char != '"' or escape_character):
+            # 比如 \n，当读取到 / 时，escape_character 会被置为 true
             if escape_character:
+                # 依据字典来获取当前的字符串，若获取失败，则把自身返回 | 获取失败的话，就是这种情况 \\
                 string += escape_characters.get(self.current_char,
                                                 self.current_char)
             else:
-                # 对双引号作转义处理
-                if self.current_char == '\\':
+                if self.current_char == '\\':  # python 语法需要对 / 做转义处理，// --> /
                     escape_character = True
+                # 啥也不是，普普通通
                 else:
                     string += self.current_char
             self.advance()
-            escape_character = False
+            escape_character = False  # 不要忘记把它返回为 False
 
         self.advance()
-        return Token(TT_STRING, string, pos_start, self.pos)
+        return Token(TT_STRING, string, pos_start, self.pos)  # string 就是我们取得的值
 
     # 解析变量
     def make_identifier(self):
@@ -229,7 +233,7 @@ class Lexer:
 # IMPORTS
 #######################################
 
-from data.tokens import *
-from util.error import IllegalCharError, ExpectedCharError
-from util.position import Position
 from data.contants import *
+from util.position import Position
+from util.error import IllegalCharError, ExpectedCharError
+from data.tokens import *

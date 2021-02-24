@@ -3,11 +3,12 @@
 # 抽象语法树（AST）的结点
 #######################################
 
+# 准备一个抽象语法树的 FOR WHILE 等的结点图示
 
 # 数字结点
 class NumberNode:
     def __init__(self, tok):
-        self.tok = tok
+        self.tok = tok  # 把形参的值装入到自己的“布兜”里
 
         self.pos_start = self.tok.pos_start
         self.pos_end = self.tok.pos_end
@@ -89,7 +90,7 @@ class IfNode:
         self.cases = cases
         self.else_case = else_case
 
-        # self.cases[0][0] 表示起始IF的第1个表达式
+        # self.cases[0][0] 表示起始IF的第1个表达式 | cases 里面装的本来就是 expr
         self.pos_start = self.cases[0][0].pos_start
         self.pos_end = (
             self.else_case or self.cases[len(self.cases) - 1])[0].pos_end  # 要么是最后 ELSE 的表达式，要么是 ELIF 的最后 1 个表达式
@@ -141,6 +142,7 @@ class FuncDefNode:
 # 函数调用的结点
 class CallNode:
     def __init__(self, node_to_call, arg_nodes):
+        # add(1,2) node_to_call -> add, arg_nodes -> 1,2
         self.node_to_call = node_to_call  # 被调用的函数
         self.arg_nodes = arg_nodes  # 被调用的参数
 

@@ -7,9 +7,11 @@
 class Interpreter:
     def visit(self, node, context):  # node : ASTNode | 起始结点  context : 默认上下文
         # type(node) 获取当前结点的实例，__name__ 获取类实例的名称 NumberNode etc. 然后通过 visit_ 进行字符串拼接
-        method_name = f'visit_{type(node).__name__}'  
-        method = getattr(self, method_name, self.no_visit_method)  # 获取类实例的属性值(method_name)
-        return method(node, context)  # 根据 method_name 执行相应的方法，比如 visit_NumberNode
+        method_name = f'visit_{type(node).__name__}'
+        # 获取类实例的属性值(method_name)
+        method = getattr(self, method_name, self.no_visit_method)
+        # 根据 method_name 执行相应的方法，比如 visit_NumberNode
+        return method(node, context)
 
     # 若依据 method_name 没有取到值，则会调用该默认方法
     def no_visit_method(self, node, context):
@@ -76,15 +78,18 @@ class Interpreter:
     # 实现解释器的二元操作部分
     def visit_BinOpNode(self, node, context):
         res = RTResult()
-        left = res.register(self.visit(node.left_node, context))  # 递归处理 AST 左结点 | 使用 register 方法是由于中途存在报错的可能性
+        # 递归处理 AST 左结点 | 使用 register 方法是由于中途存在报错的可能性
+        left = res.register(self.visit(node.left_node, context))
         if res.should_return():
             return res
-        right = res.register(self.visit(node.right_node, context))  # 递归处理 AST右结点
+        right = res.register(self.visit(
+            node.right_node, context))  # 递归处理 AST右结点
         if res.should_return():
             return res
 
         # 调用四则运算等所对应的函数来计算结果 | Number 类
         if node.op_tok.type == TT_PLUS:
+            # return Number(self.value + other.value).set_context(self.context), None
             result, error = left.added_to(right)
         elif node.op_tok.type == TT_MINUS:
             result, error = left.subbed_by(right)
@@ -114,7 +119,8 @@ class Interpreter:
         if error:
             return res.failure(error)
         else:
-            return res.success(result.set_pos(node.pos_start, node.pos_end))  # set_pos Value 类
+            # set_pos Value 类
+            return res.success(result.set_pos(node.pos_start, node.pos_end))
 
     # 实现解释器的一元操作部分
     def visit_UnaryOpNode(self, node, context):
@@ -142,19 +148,24 @@ class Interpreter:
         res = RTResult()
 
         for condition, expr, should_return_null in node.cases:
-            condition_value = res.register(self.visit(condition, context))
             if res.should_return():
-                return res
+                # 条件本身也是一个表达式，放入 self.visit 函数中，取得具体的结果
+            condition_value = res.register(self.visit(condition, context))
+            return res
 
+            # 条件为真，则可以执行 THEN 后面的 expr
             if condition_value.is_true():
-                expr_value = res.register(self.visit(expr, context))  # 执行表达式，获得所对应的值
+                expr_value = res.register(
+                    self.visit(expr, context))  # 执行表达式，获得所对应的值
                 if res.should_return():
                     return res
                 return res.success(Number.null if should_return_null else expr_value)
 
+        # ELSE 后面的 expr
         if node.else_case:
             expr, should_return_null = node.else_case
-            expr_value = res.register(self.visit(expr, context))  # 执行表达式，获得所对应的值
+            expr_value = res.register(
+                self.visit(expr, context))  # 执行表达式，获得所对应的值
             if res.should_return():
                 return res
             return res.success(Number.null if should_return_null else expr_value)
@@ -184,6 +195,7 @@ class Interpreter:
 
         i = start_value.value
 
+        # 若设置的 STEP 值大于 0，则从小到大累加
         if step_value.value >= 0:
             def condition():
                 return i < end_value.value
@@ -192,8 +204,9 @@ class Interpreter:
                 return i > end_value.value
 
         while condition():
-            # FOR 循环中的变量名存入符号表，保证其值在循环中可被直接使用，循环结束后亦然 | 符号表如何区分全局变量和局部变量
-            context.symbol_table.set(node.var_name_tok.value, Number(i))
+            # FOR 循环中的变量名存入符号表，保证其值在循环中可被直接使用，循环结束后亦可以被使用 | 符号表如何区分全局变量和局部变量
+            context.symbol_table.set(
+                node.var_name_tok.value, Number(i))  # FOR i = 1 TO 3 中的 i
             i += step_value.value
 
             value = res.register(self.visit(node.body_node, context))
@@ -245,26 +258,31 @@ class Interpreter:
                 node.pos_start, node.pos_end)
         )
 
-    # 实现解释器的函数定义部分
+    # 实现解释器的函数定义部分，获得函数的可调用对象
     def visit_FuncDefNode(self, node, context):
         res = RTResult()
 
+        # 若 node.var_name_tok.value 存在则罢了，否则为匿名函数
         func_name = node.var_name_tok.value if node.var_name_tok else None
         body_node = node.body_node
+        # for arg_name in node.arg_name.toks then [NO.1, NO.2, NO.3...] = arg_name.value
         arg_names = [arg_name.value for arg_name in node.arg_name_toks]
         func_value = Function(func_name, body_node, arg_names, node.should_auto_return).set_context(
-            context).set_pos(node.pos_start, node.pos_end)
+            context).set_pos(node.pos_start, node.pos_end)  # pos 方便对报错位置的定位
 
+        # 若不是匿名函数，则存入符号表（func_name -- func_value） | func_value 函数可调用对象
         if node.var_name_tok:
             context.symbol_table.set(func_name, func_value)
 
+        # 匿名函数
         return res.success(func_value)
 
-    # 实现解释器的函数调用部分
+    # 实现解释器的函数调用部分，依据 func_name 从符号表中取 func_value
     def visit_CallNode(self, node, context):
         res = RTResult()
         args = []
 
+        # 递归过程，最终会调用 visit_VarAccessNode 函数通过函数名从符号表中取值，也就是可调用函数对象
         value_to_call = res.register(self.visit(node.node_to_call, context))
         if res.should_return():
             return res

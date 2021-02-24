@@ -51,7 +51,7 @@ def run(fn, text):
 # IMPORTS
 #######################################
 
-from basic.lexer import Lexer
-from basic.parser import Parser
-from basic.interpreter import Interpreter
 from util.context import Context
+from basic.interpreter import Interpreter
+from basic.parser import Parser
+from basic.lexer import Lexer

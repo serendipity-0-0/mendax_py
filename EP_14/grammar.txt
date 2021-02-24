@@ -44,8 +44,9 @@ if-expr-c   ->  KEYWORD:ELSE
                 statement
             |   (NEWLINE statements KEYWORD:END)
 
+# FOR 循环的优先级高于 IF
 for-expr    ->  KEYWORD:FOR IDENTIFIER EQ expr KEYWORD:TO expr 
-                (KEYWORD:STEP expr)? KEYWORD:THEN
+                (KEYWORD:STEP expr)? KEYWORD:THEN  # () 意思是可以没有
                 statement
             |   (NEWLINE statements KEYWORD:END)
 

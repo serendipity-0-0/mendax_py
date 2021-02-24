@@ -229,7 +229,7 @@ class Lexer:
 # IMPORTS
 #######################################
 
-from data.contants import *
-from util.position import *
-from util.error import IllegalCharError, ExpectedCharError
 from data.tokens import *
+from util.error import IllegalCharError, ExpectedCharError
+from util.position import Position
+from data.contants import *

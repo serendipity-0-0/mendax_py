@@ -533,7 +533,7 @@ class Parser:
                 f"Expected 'FOR'"
             ))
 
-        res.register_advancement()
+        res.register_advancement()  # 套路操作，无论何时都不用忘记记录当前正在读取的位置，便于进程的回滚
         self.advance()
 
         if self.current_tok.type != TT_IDENTIFIER:
@@ -555,6 +555,7 @@ class Parser:
         res.register_advancement()
         self.advance()
 
+        # 1 TO 10，start_value = 1，end_value = 10
         start_value = res.register(self.expr())
         if res.error:
             return res
@@ -579,6 +580,7 @@ class Parser:
             step_value = res.register(self.expr())
             if res.error:
                 return res
+        # 若没有设置 STEP 关键字
         else:
             step_value = None
 
@@ -648,7 +650,7 @@ class Parser:
             res.register_advancement()
             self.advance()
 
-            body = res.register(self.statements())
+            body = res.register(self.statements())  # 结果值
             if res.error:
                 return res
 
@@ -816,7 +818,7 @@ class Parser:
 # IMPORTS
 #######################################
 
-from util.nodes import *
-from data.tokens import *
-from util.error import InvalidSyntaxError
 from util.parser_result import ParseResult
+from util.error import InvalidSyntaxError
+from data.tokens import *
+from util.nodes import *

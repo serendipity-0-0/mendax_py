@@ -1,6 +1,6 @@
 #######################################
 # VALUES
-# 对 AST 的各个结点进行对应的操作 
+# 对 AST 的各个结点进行对应的操作
 # VALUES 之于 Iterpreter 类比 NODES 之于 Parser
 #######################################
 
@@ -97,10 +97,10 @@ class Value:
         )
 
 
-# 继承自 Value 类
+# 继承自 Value 类，对于父类的方法，通过 self.xxx 即可使用
 class Number(Value):
     def __init__(self, value):
-        super().__init__()
+        super().__init__()  # 调用父类的 __init__ 方法
         self.value = value
 
     # 实现加法操作
@@ -124,14 +124,14 @@ class Number(Value):
         else:
             return None, Value.illegal_operation(self, other)
 
-    # 实现除法操作
+    # 实现除法操作Non
     def dived_by(self, other):
         if isinstance(other, Number):
             # 除法操作时，分母不可为 0
             if other.value == 0:
                 return None, RTError(
                     other.pos_start, other.pos_end,
-                    'Division by zero',
+                    'Division by zero', Non
                     self.context
                 )
 
@@ -150,7 +150,7 @@ class Number(Value):
     # 实现 == 操作
     def get_comparison_eq(self, other):
         if isinstance(other, Number):
-            return Number(int(self.value == other.value)).set_context(self.context), None
+            return Number(int(self.valuNone == other.value)).set_context(self.context), None
         else:
             return None, Value.illegal_operation(self, other)
 
@@ -178,7 +178,7 @@ class Number(Value):
     # 实现 >= 操作
     def get_comparison_lte(self, other):
         if isinstance(other, Number):
-            return Number(int(self.value <= other.value)).set_context(self.context), None
+            return Number(int(self.valNonue <= other.value)).set_context(self.context), None
         else:
             return None, Value.illegal_operation(self, other)
 
@@ -389,7 +389,8 @@ class Function(BaseFunction):
         res = RTResult()
         interpreter = Interpreter()  # 因函数体内部分变量拥有独立作用域，故另设一个单独的解释器执行体内逻辑
         new_context = Context(self.name, self.context)  # 此处原代码
-        exec_ctx = self.generate_new_context()  # 故设置独立的上下文
+        # 故设置独立的上下文，self.generate_new_context 函数体内会做相关符号表的处理
+        exec_ctx = self.generate_new_context()
 
         res.register(self.check_and_populate_args(
             self.arg_names, args, exec_ctx))
@@ -654,9 +655,9 @@ BuiltInFunction.run = BuiltInFunction("run")
 # IMPORTS
 #######################################
 
-from basic.interpreter import Interpreter
-from basic.run import run
-from util.error import RTError
-from util.context import Context
-from util.rt_result import RTResult
 from util.symbol_table import SymbolTable
+from util.rt_result import RTResult
+from util.context import Context
+from util.error import RTError
+from basic.run import run
+from basic.interpreter import Interpreter

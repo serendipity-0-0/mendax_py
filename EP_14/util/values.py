@@ -268,15 +268,15 @@ class String(Value):
 class List(Value):
     def __init__(self, elements):
         super().__init__()
-        self.elements = elements
+        self.elements = elements  # 列表
 
-    # 往列表中添加元素
+    # 往列表中添加元素 | 重载
     def added_to(self, other):
         new_list = self.copy()
         new_list.elements.append(other)
         return new_list, None
 
-    # 从列表中删除元素
+    # 从列表中删除元素 | 重载
     def subbed_by(self, other):
         if isinstance(other, Number):
             new_list = self.copy()
@@ -292,16 +292,16 @@ class List(Value):
         else:
             return None, Value.illegal_operation(self, other)
 
-    # 列表间的合并
+    # 列表间的合并 | 重载
     def multed_by(self, other):
         if isinstance(other, List):
             new_list = self.copy()
-            new_list.elements.extend(other.elements)
+            new_list.elements.extend(other.elements)  # extend 拼接
             return new_list, None
         else:
             return None, Value.illegal_operation(self, other)
 
-    # 根据索引从列表中取具体元素的值
+    # 根据索引从列表中取具体元素的值 | 重载
     def dived_by(self, other):
         if isinstance(other, Number):
             try:

@@ -1,4 +1,4 @@
-statements  ->  NEWLINE* statement (NEWLINE+ statement)* NEWLINE*  # * 表示可以出现多次
+statements  ->  NEWLINE* statement (NEWLINE+ statement)* NEWLINE*  # * 表示可以出现 0 次或多次
 
 statement	->  KEYWORD:RETURN expr?  # ? 表示可以出现 0 次或 1 次 
 			->  KEYWORD:CONTINUE
@@ -30,7 +30,7 @@ atom        ->  INT|FLOAT|STRING|IDENTIFIER  # 1, 1,2, "mendax", varible 访问�
             ->  while-expr
             ->  func-def
 
-list-expr   ->  LSQUARE (expr (COMMA expr)*)? RSQUARE
+list-expr   ->  LSQUARE (expr (COMMA expr)*)? RSQUARE  # LSQUARE -> [ | RSQUARE -> ]
 
 if-expr     ->  KEYWORD:IF expr KEYWORD:THEN
                 (statement if-expr-b|if-expr-c?)

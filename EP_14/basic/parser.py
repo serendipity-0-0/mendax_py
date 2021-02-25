@@ -344,7 +344,7 @@ class Parser:
     # list-expr  ->  LSQUARE (expr (COMMA expr)*)? RSQUARE
     def list_expr(self):
         res = ParseResult()
-        element_nodes = []
+        element_nodes = []  # 存放列表中的元素 [1, 2, 3]
         pos_start = self.current_tok.pos_start.copy()
 
         if self.current_tok.type != TT_LSQUARE:
@@ -356,6 +356,7 @@ class Parser:
         res.register_advancement()
         self.advance()
 
+        # 若 self.current_tok.type == TT_RSQUARE 则说明为空列表 []
         if self.current_tok.type == TT_RSQUARE:
             res.register_advancement()
             self.advance()

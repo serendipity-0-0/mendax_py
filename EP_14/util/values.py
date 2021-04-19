@@ -131,7 +131,7 @@ class Number(Value):
             if other.value == 0:
                 return None, RTError(
                     other.pos_start, other.pos_end,
-                    'Division by zero', Non
+                    'Division by zero',
                     self.context
                 )
 

@@ -150,7 +150,7 @@ class Interpreter:
         for condition, expr, should_return_null in node.cases:
             if res.should_return():
                 # 条件本身也是一个表达式，放入 self.visit 函数中，取得具体的结果
-            condition_value = res.register(self.visit(condition, context))
+                condition_value = res.register(self.visit(condition, context))
             return res
 
             # 条件为真，则可以执行 THEN 后面的 expr

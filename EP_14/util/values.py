@@ -242,7 +242,7 @@ class String(Value):
         else:
             return None, Value.illegal_operation(self, other)
 
-    # 重载 multed_by 函数 | 基于 python 语法的重复 "HelloWorld" * N 次
+    # 重载 multed_by 函数；基于 python 语法的重复 "HelloWorld" * N 次
     def multed_by(self, other):
         if isinstance(other, Number):
             return String(self.value * other.value).set_context(self.context), None
@@ -270,13 +270,13 @@ class List(Value):
         super().__init__()
         self.elements = elements  # 列表
 
-    # 往列表中添加元素 | 重载
+    # 往列表中添加元素 （重载） 
     def added_to(self, other):
         new_list = self.copy()
         new_list.elements.append(other)
         return new_list, None
 
-    # 从列表中删除元素 | 重载
+    # 从列表中删除元素 （重载） 
     def subbed_by(self, other):
         if isinstance(other, Number):
             new_list = self.copy()
@@ -292,7 +292,7 @@ class List(Value):
         else:
             return None, Value.illegal_operation(self, other)
 
-    # 列表间的合并 | 重载
+    # 列表间的合并 （重载） 
     def multed_by(self, other):
         if isinstance(other, List):
             new_list = self.copy()
@@ -301,7 +301,7 @@ class List(Value):
         else:
             return None, Value.illegal_operation(self, other)
 
-    # 根据索引从列表中取具体元素的值 | 重载
+    # 根据索引从列表中取具体元素的值 （重载） 
     def dived_by(self, other):
         if isinstance(other, Number):
             try:

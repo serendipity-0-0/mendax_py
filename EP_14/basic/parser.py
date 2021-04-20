@@ -28,7 +28,7 @@ class Parser:
             self.current_tok = self.tokens[self.tok_idx]
 
     def parse(self):
-        res = self.statements()  # 根据已经写好的 BNF 文法可知，statements 函数位于起始处 | 自此便开始了递归向下的处理
+        res = self.statements()  # 根据已经写好的 BNF 文法可知，statements 函数位于起始处；自此便开始了递归向下的处理
         # 如果存在 error 并且没有读到 EOF，则报告错误
         if not res.error and self.current_tok.type != TT_EOF:
             return res.failure(InvalidSyntaxError(
@@ -199,7 +199,7 @@ class Parser:
 
     # 根据文法（grammar.txt）实现函数之间的递归调用
     # factor ->  (PLUS|MINUS) factor -1 == --1 == ---1
-    #	    ->  power
+    #	     ->  power
     def factor(self):
         res = ParseResult()  # ParseResult 返回的是对象
         tok = self.current_tok

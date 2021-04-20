@@ -129,7 +129,7 @@ class Lexer:
         while self.current_char != None and (self.current_char != '"' or escape_character):
             # 比如 \n，当读取到 / 时，escape_character 会被置为 true
             if escape_character:
-                # 依据字典来获取当前的字符串，若获取失败，则把自身返回 | 获取失败的话，就是这种情况 \\
+                # 依据字典来获取当前的字符串，若获取失败，则把自身返回。例如，获取失败的话，就是这种情况 \\
                 string += escape_characters.get(self.current_char,
                                                 self.current_char)
             else:
@@ -149,7 +149,7 @@ class Lexer:
         id_str = ''
         pos_start = self.pos.copy()
 
-        # VAR varible = 1024 | id_str = 'varible' | 变量就是一坨字符
+        # VAR varible = 1024;id_str = 'varible' （变量就是一坨字符）
         while self.current_char != None and self.current_char in LETTERS_DIGITS + '_':
             id_str += self.current_char
             self.advance()

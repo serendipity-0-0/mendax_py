@@ -5,8 +5,8 @@
 
 
 class Interpreter:
-    def visit(self, node, context):  # node : ASTNode | 起始结点  context : 默认上下文
-        # type(node) 获取当前结点的实例，__name__ 获取类实例的名称 NumberNode etc. 然后通过 visit_ 进行字符串拼接
+    def visit(self, node, context):  # node : ASTNode，起始结点；context : 默认上下文
+        # type(node) 获取当前结点的实例，__name__ 获取类实例的名称，比如 NumberNode etc. 然后通过 visit_ 进行字符串拼接
         method_name = f'visit_{type(node).__name__}'
         # 获取类实例的属性值(method_name)
         method = getattr(self, method_name, self.no_visit_method)
@@ -78,7 +78,7 @@ class Interpreter:
     # 实现解释器的二元操作部分（不要忘记字符串的拼接..）
     def visit_BinOpNode(self, node, context):
         res = RTResult()
-        # 递归处理 AST 左结点 | 使用 register 方法是由于中途存在报错的可能性
+        # 递归处理 AST 左结点，使用 register 方法是由于中途存在报错的可能性
         left = res.register(self.visit(node.left_node, context))
         if res.should_return():
             return res
@@ -87,7 +87,7 @@ class Interpreter:
         if res.should_return():
             return res
 
-        # 调用四则运算等所对应的函数来计算结果 | Number 类 | String 类
+        # 调用四则运算等所对应的函数来计算结果，比如 Number 类 和 String 类
         if node.op_tok.type == TT_PLUS:
             # return Number(self.value + other.value).set_context(self.context), None
             result, error = left.added_to(right)
@@ -204,7 +204,7 @@ class Interpreter:
                 return i > end_value.value
 
         while condition():
-            # FOR 循环中的变量名存入符号表，保证其值在循环中可被直接使用，循环结束后亦可以被使用 | 符号表如何区分全局变量和局部变量
+            # FOR 循环中的变量名存入符号表，保证其值在循环中可被直接使用，循环结束后亦可以被使用 （符号表如何区分全局变量和局部变量？）
             context.symbol_table.set(
                 node.var_name_tok.value, Number(i))  # FOR i = 1 TO 3 中的 i
             i += step_value.value
@@ -270,7 +270,7 @@ class Interpreter:
         func_value = Function(func_name, body_node, arg_names, node.should_auto_return).set_context(
             context).set_pos(node.pos_start, node.pos_end)  # pos 方便对报错位置的定位
 
-        # 若不是匿名函数，则存入符号表（func_name -- func_value） | func_value 函数可调用对象
+        # 若不是匿名函数，则存入符号表（func_name -- func_value）；func_value 函数可调用对象
         if node.var_name_tok:
             context.symbol_table.set(func_name, func_value)
 

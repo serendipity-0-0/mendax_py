@@ -38,7 +38,7 @@ class ListNode:
         self.pos_end = pos_end
 
 
-# 获取指定变量名的值的结点 | 访问变量
+# 获取指定变量名的值的结点 （访问变量）
 class VarAccessNode:
     def __init__(self, var_name_tok):
         self.var_name_tok = var_name_tok
@@ -47,7 +47,7 @@ class VarAccessNode:
         self.pos_end = self.var_name_tok.pos_end
 
 
-# 为指定变量名分配值的结点 | 变量赋值
+# 为指定变量名分配值的结点 （变量赋值）
 class VarAssignNode:
     def __init__(self, var_name_tok, value_node):
         self.var_name_tok = var_name_tok
@@ -90,7 +90,7 @@ class IfNode:
         self.cases = cases
         self.else_case = else_case
 
-        # self.cases[0][0] 表示起始IF的第1个表达式 | cases 里面装的本来就是 expr
+        # self.cases[0][0] 表示起始IF的第1个表达式；cases 里面装的本来就是 expr
         self.pos_start = self.cases[0][0].pos_start
         self.pos_end = (
             self.else_case or self.cases[len(self.cases) - 1])[0].pos_end  # 要么是最后 ELSE 的表达式，要么是 ELIF 的最后 1 个表达式

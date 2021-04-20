@@ -1,4 +1,4 @@
-# 用于维持变量的值并在合适的时机将其回收 | 全局变量和局部变量（方法）具有各自的符号表 | 字典  key-value
+# 用于维持变量的值并在合适的时机将其回收；全局变量和局部变量（方法）具有各自的符号表；字典: key-value
 class SymbolTable:
     def __init__(self, parent=None):
         self.symbols = {}  # 字典是另一种可变容器模型，且可存储任意类型对象

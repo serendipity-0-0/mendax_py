@@ -150,7 +150,7 @@ class Number(Value):
     # 实现 == 操作
     def get_comparison_eq(self, other):
         if isinstance(other, Number):
-            return Number(int(self.valuNone == other.value)).set_context(self.context), None
+            return Number(int(self.value == other.value)).set_context(self.context), None
         else:
             return None, Value.illegal_operation(self, other)
 
@@ -178,7 +178,7 @@ class Number(Value):
     # 实现 >= 操作
     def get_comparison_lte(self, other):
         if isinstance(other, Number):
-            return Number(int(self.valNonue <= other.value)).set_context(self.context), None
+            return Number(int(self.value <= other.value)).set_context(self.context), None
         else:
             return None, Value.illegal_operation(self, other)
 
